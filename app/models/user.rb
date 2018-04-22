@@ -5,14 +5,21 @@ class User < ApplicationRecord
          :rememberable, :trackable, :validatable,
          :omniauthable, :omniauth_providers => [:github, :google]
 
-  validates_uniqueness_of :username, :email
+  acts_as_voter
+
+  validates_uniqueness_of :email
   validates :username, length: { in: 4..20 }
-  validates :learning_goal, length: { maximum: 100 }
+  validates :learning_goal, length: { maximum: 1700 }
 
   has_many :lesson_completions, foreign_key: :student_id
   has_many :completed_lessons, through: :lesson_completions, source: :lesson
   has_many :projects, dependent: :destroy
   has_many :user_providers, dependent: :destroy
+
+  def progress_for(course)
+    @progress ||= Hash.new { |h, c| h[c] = CourseProgress.new(c, self) }
+    @progress[course]
+  end
 
   def has_completed?(lesson)
     completed_lessons.exists?(lesson.id)

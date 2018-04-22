@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
-ruby '2.3'
+ruby '2.5'
 
 gem 'rails',                        '~> 5.0.0'
-gem 'puma',                         '~> 3.6.0'
+gem 'puma',                         '~> 3.11.2'
 gem 'turbolinks'
 gem 'jquery-rails',                 '~> 4.2.1'
-gem 'devise',                       '~> 4.2.0' # Managing environment variables
+gem 'devise',                       '~> 4.4.0' # Managing environment variables
 gem 'rack-timeout',                 '~> 0.4'
 gem 'kaminari',                     '~> 1.0', '>= 1.0.1'
 gem 'pg',                           '~> 0.19'
@@ -24,6 +24,10 @@ gem 'rack-attack'
 gem 'tether-rails' # dependency for bootstrap tooltips
 gem 'acts_as_votable'
 gem 'kramdown'
+gem 'toastr-rails'
+gem 'gibbon',                       '~> 3.2.0' # for Mailchimp
+gem 'nokogiri',                     '~> 1.8', '>= 1.8.2'
+gem 'skylight'
 
 group :production do
   gem 'rails_12factor',             '~> 0.0.3'
@@ -46,12 +50,13 @@ group :development, :test do
   gem 'rake',                              '~> 11.3'
   gem 'rails-controller-testing',          '~> 1.0'
   gem 'figaro',                            '1.1'
+  gem 'bundle-audit'
 end
 
 group :development do
   gem 'web-console',                       '~> 3.4'
-  gem 'better_errors',                     '~> 2.1'  # gives much better error messages for debug
-  gem 'binding_of_caller',                 '~> 0.7'  # helps out better_errors by giving you an interactive way to query variables and methods on the better_errors error screen
+  gem 'better_errors',                     '~> 2.4'  # gives much better error messages for debug
+  gem 'binding_of_caller',                 '~> 0.8'  # helps out better_errors by giving you an interactive way to query variables and methods on the better_errors error screen
   gem 'letter_opener',                     '~> 1.4'  # shows outgoing emails in your browser instead
   gem 'derailed'                                     # Memory benchmarking
   gem 'reek'                                         # Code smell detector

@@ -1,4 +1,6 @@
 module ApplicationHelper
+  require 'kramdown'
+
   def chat_link
     'https://gitter.im/TheOdinProject/theodinproject'
   end
@@ -7,14 +9,14 @@ module ApplicationHelper
     "https://github.com/TheOdinProject/#{extension}"
   end
 
-  def title(input = nil)
+  def forum_link
+    'https://forum.theodinproject.com'
+  end
+
+  def title(input=nil)
     if input
       content_for(:title) { input + ' | The Odin Project' }
     end
-  end
-
-  def convert_markdown_to_html(markdown)
-    MarkdownConverter.new(markdown).as_html
   end
 
   def bootstrap_class_for(flash_type)
@@ -106,6 +108,11 @@ module ApplicationHelper
           '<p>We don\'t provide a certificate for course completion. Employers will be much more impressed with your amazing personal portfolio of projects, many of which you\'ll hopefully have built with inspiration from The Odin Project.</p>'
       },
       {
+        question: 'Do you have a Code of Conduct?',
+        answer:
+          "Yes!  While interacting with other Odinites you agree to the following:<br />" + Kramdown::Document.new(File.read('doc/code_of_conduct.md')).to_html
+        },
+      {
         question: 'Can I use this curriculum to teach?',
         answer:
           "<p>The Odin Project is licensed under two pieces: the curriculum and the main website.  The main website is a fully open-source project <a href='https://github.com/TheOdinProject/theodinproject/blob/master/license.txt'>under an MIT license</a>, so you can use the code for whatever you want.  The curriculum is currently licensed under a <a href='https://github.com/TheOdinProject/curriculum/blob/master/license.md'>Creative Commons license</a> which restricts it to noncommercial use without prior authorization.</p>
@@ -184,19 +191,19 @@ module ApplicationHelper
   end
 
   def percentage_completed_by_user(course, user)
-    CourseProgress.percentage_completed_by_user(course, user)
+    user.progress_for(course).percentage
   end
 
   def course_started_by_user?(course, user)
-    CourseProgress.course_started?(course, user)
+    user.progress_for(course).started?
   end
 
   def course_completed_by_user?(course, user)
-    CourseProgress.course_completed?(course, user)
+    user.progress_for(course).completed?
   end
 
-  def next_lesson_to_complete(course, lesson_completions)
-    NextLesson.new(course, lesson_completions).lesson_to_complete
+  def next_lesson_to_complete(course, completed_lessons)
+    NextLesson.new(course, completed_lessons).to_complete
   end
 
   def modifier_for_badge(course, user)

@@ -1,7 +1,7 @@
 sudo: required
 language: ruby
 rvm:
-  - 2.3.0
+  - 2.5.0
 services:
   - postgresql
 install:
@@ -13,6 +13,7 @@ before_script:
   - bundle install
   - psql -c 'create database theodinproject_test;' -U postgres
 script:
+  - bundle exec rake bundler:audit
   - bundle exec rspec
 test:
   adapter: postgresql

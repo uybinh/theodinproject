@@ -26,7 +26,7 @@ RSpec.describe Lesson do
   it { is_expected.to have_one(:course) }
   it { is_expected.to have_many(:lesson_completions) }
   it { is_expected.to have_many(:completing_users) }
-  it { is_expected.to validate_uniqueness_of(:position).case_insensitive }
+  it { is_expected.to validate_presence_of(:position) }
   it { is_expected.to validate_presence_of(:content).on(:update) }
 
   describe '#position_in_section' do
@@ -48,43 +48,9 @@ RSpec.describe Lesson do
   end
 
   describe '#import' do
-    it 'updates the lessons content' do
-      VCR.use_cassette('lesson_content') { lesson.import_content_from_github }
-      expect(lesson.reload.content).not_to be nil
-    end
-
-    context 'when the lesson content has not changed' do
-      it 'does not update the lesson content' do
-        VCR.use_cassette('lesson_content') { lesson.import_content_from_github }
-        expect(lesson).not_to receive(:update)
-        VCR.use_cassette('lesson_content') { lesson.import_content_from_github }
-      end
-    end
-
-    context 'when Octokit raises an error' do
-      let(:logger) { double('Logger') }
-
-      before do
-        allow(Octokit).to receive(:contents)
-          .with('theodinproject/curriculum', path: '/README.md', ref: 'feature/redesign-structure' )
-          .and_raise(Octokit::Error)
-
-        allow(lesson).to receive(:errors).and_return('there was a problem')
-        allow(lesson).to receive(:logger).and_return(logger)
-
-        allow(logger).to receive(:error)
-          .with('Failed to import "test_lesson" content: there was a problem')
-      end
-
-      it 'returns false' do
-        expect(lesson.import_content_from_github).to eql(false)
-      end
-
-      it 'logs a failure message' do
-        expect(logger).to receive(:error)
-          .with('Failed to import "test_lesson" content: there was a problem')
-        lesson.import_content_from_github
-      end
+    it 'uses the lesson content importer to get lesson content from github' do
+      expect(LessonContentImporter).to receive(:for).with(lesson)
+      lesson.import_content_from_github
     end
   end
 end

@@ -1,12 +1,13 @@
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
-  protect_from_forgery
+  protect_from_forgery with: :exception
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found_error
 
   rescue_from CanCan::AccessDenied do
     respond_to do |format|
       format.json { head :forbidden }
+      format.js { head :forbidden }
       format.html do
         redirect_to root_url, alert: 'You are not authorized to do that'
       end

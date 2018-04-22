@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170929144849) do
+ActiveRecord::Schema.define(version: 20180413180306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20170929144849) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["lesson_id", "student_id"], name: "index_lesson_completions_on_lesson_id_and_student_id", unique: true, using: :btree
+    t.index ["student_id"], name: "index_lesson_completions_on_student_id", using: :btree
   end
 
   create_table "lessons", force: :cascade do |t|
@@ -65,7 +66,8 @@ ActiveRecord::Schema.define(version: 20170929144849) do
     t.string   "title_url"
     t.text     "content"
     t.string   "slug"
-    t.index ["position"], name: "index_lessons_on_position", unique: true, using: :btree
+    t.string   "repo"
+    t.index ["position"], name: "index_lessons_on_position", using: :btree
     t.index ["slug", "section_id"], name: "index_lessons_on_slug_and_section_id", unique: true, using: :btree
   end
 
@@ -139,7 +141,7 @@ ActiveRecord::Schema.define(version: 20170929144849) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-    t.index ["username"], name: "index_users_on_username", unique: true, using: :btree
+    t.index ["username"], name: "index_users_on_username", using: :btree
   end
 
   create_table "votes", force: :cascade do |t|
